@@ -88,11 +88,27 @@ namespace ArrayLIst
             Enumerator enumerator = new Enumerator();
             int index = 0;
 
-            while (!(enumerator.MoveNext(isEnd) is false)) 
+            while (true)
             {
-                arrayElement[index] = enumerator.Current;
-                isEnd = isEnd.prevNode;
-                index++;
+                try
+                {
+                    enumerator.MoveNext(isEnd);
+                    arrayElement[index] = enumerator.Current;
+
+                    isEnd = isEnd.prevNode;
+
+                    if (isEnd == null)
+                    {
+                        break;
+                    }
+
+                    index++;
+                }
+                catch (Exception ex)
+                {
+                    break;
+                }
+
             }
 
             return arrayElement;
@@ -103,15 +119,8 @@ namespace ArrayLIst
         public object Current;
         public object MoveNext(Node ElementList)
         {
-            if (ElementList.prevNode != null)
-            {
-                Current = ElementList.dataNode;
-                return Current;
-            }
-            else 
-            { 
-             return false;
-            }   
+            Current = ElementList.dataNode;
+            return Current;
         }
     }
 
@@ -169,21 +178,48 @@ namespace ArrayLIst
         {
             Console.WriteLine("test MyCollect");
 
+            Program obj = new Program();
+
+            Console.WriteLine("Пример цифр и сортировка");
+            obj.testNum();
+
+            Console.WriteLine("Пример букв");
+            obj.testChar();
+
+            Console.ReadKey();
+        }
+
+        public void testNum()
+        {
             RealizationList List = new RealizationList();
 
-            for (int i = 0; i < 10; i++) 
+            for (int i = 0; i < 10; i++)
             {
                 List.addElementInBegin(i);
             }
 
             List.sortElement(5);
 
-            foreach (var item in List.realizatonForEach()) 
+            foreach (var item in List.realizatonForEach())
             {
                 Console.WriteLine(item);
             }
+        }
 
-            Console.ReadKey();
+        public void testChar() 
+        {
+            char[] testChar = { 'a', 'b', 'c', 'd' };
+            RealizationList List = new RealizationList();
+
+            for (int i = 0; i < testChar.Length; i++)
+            {
+                List.addElementInBegin(testChar[i]);
+            }
+
+            foreach (var item in List.realizatonForEach())
+            {
+                Console.WriteLine(item);
+            }
         }
     }
 }
