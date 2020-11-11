@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ArrayLIst
 {
@@ -12,12 +14,12 @@ namespace ArrayLIst
     {
         Node headList;
         private int lenghtList = 0;
-        public void addElementInBegin(Object Element)
+        public void AddElementInBegin(Object Element)
         {
             Node nextNode = new Node();
             nextNode.dataNode = Element;
 
-            if (isExsistHead())
+            if (IsExsistHead())
             {
                 nextNode.prevNode = headList;
                 headList = nextNode;
@@ -28,36 +30,33 @@ namespace ArrayLIst
             }
             lenghtList++;
         }
-
-        public void removeElement()
+        public void RemoveElement()
         {
-            if (isExsistHead())
+            if (IsExsistHead())
             {
                 headList = headList.prevNode;
             }
             else
             {
-                throw new Exception();
+                throw new Exception("Список пуст");
             }
         }
-
-        public Node getHeadNode()
+        public Node GetHeadNode()
         {
-            if (isExsistHead())
+            if (IsExsistHead())
             {
                 return headList;
             }
             else
             {
-                throw new Exception();
+                throw new Exception("Список пуст");
             }
         }
-
-        public Node getTailNode()
+        public Node GetTailNode()
         {
             Node tailNode = new Node();
 
-            if (isExsistHead())
+            if (IsExsistHead())
             {
                 Node isTail = headList;
                 do
@@ -72,55 +71,60 @@ namespace ArrayLIst
             }
             else 
             {
-                throw new Exception();
+                throw new Exception("Список пуст");
             }
         }
-
-        private bool isExsistHead() 
+        private bool IsExsistHead() 
         { 
            return (headList != null);
         }
-
-        public object[] realizatonForEach() 
+        private Node[] CopyList() 
         {
-            Object[] arrayElement = new object[lenghtList];
+            Node[] arrayElements = new Node[lenghtList];
             Node isEnd = headList;
             Enumerator enumerator = new Enumerator();
             int index = 0;
 
             while (true)
             {
-                try
+                enumerator.MoveNext(isEnd); 
+
+                try 
                 {
-                    enumerator.MoveNext(isEnd);
-                    arrayElement[index] = enumerator.Current;
-
-                    isEnd = isEnd.prevNode;
-
-                    if (isEnd == null)
+                    if (enumerator._current.prevNode != null)
+                    {
+                        arrayElements[index] = (enumerator._current);
+                        isEnd = isEnd.prevNode;
+                        index++;
+                    }
+                    else 
                     {
                         break;
                     }
-
-                    index++;
                 }
-                catch (Exception ex)
+                catch(Exception ex) 
                 {
                     break;
                 }
+               
 
             }
-
-            return arrayElement;
+            return arrayElements;
+        }
+        public IEnumerator GetEnumerator()
+        {
+            Node[] arrayElements = CopyList();
+            return arrayElements.GetEnumerator();
         }
     }
-    class Enumerator 
+    class Enumerator
     {
-        public object Current;
+        public Node _current { get; set; }
+        public Enumerator() { }
         public object MoveNext(Node ElementList)
         {
-            Current = ElementList.dataNode;
-            return Current;
+            _current = ElementList;
+            return _current;
         }
     }
 
@@ -133,9 +137,9 @@ namespace ArrayLIst
             {
                 //пусть отсортирован по убыванию
                 //голова -> хвост наибольший -> наименьший 
-                foreach (var item in list.realizatonForEach())
+                foreach (Node item in list)
                 {
-                    if ((int)newElement < (int)item)
+                    if ((int)newElement < (int)item.dataNode)
                     {
                         index++;
                         continue;
@@ -154,8 +158,8 @@ namespace ArrayLIst
         }
         private static void addElement(this RealizationList list, object newElement,int index) 
         {
-            Node beginNode = list.getHeadNode();
-            Node previosNode = list.getHeadNode().prevNode;
+            Node beginNode = list.GetHeadNode();
+            Node previosNode = list.GetHeadNode().prevNode;
 
             for (int numNode = 0; numNode < index; numNode++) 
             {
@@ -191,34 +195,35 @@ namespace ArrayLIst
 
         public void testNum()
         {
-            RealizationList List = new RealizationList();
+            RealizationList list = new RealizationList();
 
             for (int i = 0; i < 10; i++)
             {
-                List.addElementInBegin(i);
+                list.AddElementInBegin(i);
             }
 
-            List.sortElement(5);
+            list.sortElement(5);
 
-            foreach (var item in List.realizatonForEach())
+            foreach (Node item in list)
             {
-                Console.WriteLine(item);
+                Console.WriteLine(item.dataNode);
             }
         }
 
         public void testChar() 
         {
             char[] testChar = { 'a', 'b', 'c', 'd' };
-            RealizationList List = new RealizationList();
+            RealizationList list = new RealizationList();
 
             for (int i = 0; i < testChar.Length; i++)
             {
-                List.addElementInBegin(testChar[i]);
+                list.AddElementInBegin(testChar[i]);
             }
 
-            foreach (var item in List.realizatonForEach())
+            foreach (Node item in list)
             {
-                Console.WriteLine(item);
+                if (item == null) { break; }
+                Console.WriteLine(item.dataNode);
             }
         }
     }
